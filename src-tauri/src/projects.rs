@@ -3,7 +3,8 @@ pub mod manage{
     use std::fs; 
     use std::path::{Path, PathBuf};
     use std::process::Command; 
-    use std::cell::RefCell; 
+    use std::sync::Arc; 
+    use std::thread; 
         #[tauri::command]
         pub fn get_dir<'s>(cur_path: String)->Vec<PathBuf>{
             let path: &Path = Path::new(&cur_path); 
@@ -15,35 +16,48 @@ pub mod manage{
             }
         #[tauri::command]
         pub fn generate_tauri_app(framework: String, appname: String){ 
-            let no_title = format!("tauri-{}",&framework); 
-            let gen_app_name: RefCell<&str> = RefCell::new(&appname); 
-            println!("{:?}", gen_app_name.clone().into_inner()); 
-            if appname.to_string().len()==0{  
-                *gen_app_name.borrow_mut() = no_title.as_str(); 
+            let no_title = format!("tauri-{}", &framework.as_str()); 
+            let mut gen_app_name: Arc<String> = Arc::new(appname.clone()); 
+            println!("{}", appname.clone().len()); 
+            if appname.len()==0{  
+                gen_app_name = Arc::new(no_title); 
             } 
             match framework.as_str(){
                 "initial"=>{
-                    Command::new("pnpm").args(["create", "tauri-app", "tauri-svelte", "--manager", "pnpm", "--template", "svelte-kit", "--yes"]).output().expect("unable ot create tauri app");  
+                    let cmd_command = thread::spawn(||{
+                        Command::new("pnpm").args(["create", "tauri-app", "tauri-svelte", "--manager", "pnpm", "--template", "svelte-kit", "--yes"]).output().expect("unable ot create tauri app");  
+                    });
+                    cmd_command.join().unwrap(); 
                 },
                 "svelte"=>{
-                    //Command::new("mkdir").arg("projects").output().expect("unable to make directory");
-                    Command::new("pnpm").args(["create", "tauri-app", gen_app_name.take(), "--manager", "pnpm", "--template", "svelte-kit", "--yes"]).output().expect("unable ot create tauri app"); 
+                    let cmd_command = thread::spawn(|| {
+                        Command::new("pnpm").args(["create", "tauri-app", &Arc::try_unwrap(gen_app_name).unwrap().as_str(), "--manager", "pnpm", "--template", "svelte-kit", "--yes"]).output().expect("unable ot create tauri app");
+                    }); 
+                    cmd_command.join().unwrap();  
                 }, 
-                "nextjs"=>{ 
-                    Command::new("pnpm").args(["create", "tauri-app", gen_app_name.take(), "--manager", "pnpm", "--template", "next", "--yes"]).output().expect("unable ot create tauri app"); 
+                "nextjs"=>{
+                    let cmd_command = thread::spawn(|| { 
+                    Command::new("pnpm").args(["create", "tauri-app", &Arc::try_unwrap(gen_app_name).unwrap().as_str(), "--manager", "pnpm", "--template", "next", "--yes"]).output().expect("unable ot create tauri app"); 
+                    }); 
+                cmd_command.join().unwrap();
                 }, 
                 "solid"=>{
-                    Command::new("pnpm").args(["create", "tauri-app",gen_app_name.take(), "--manager", "pnpm", "--template", "solid", "--yes"]).output().expect("unable ot create tauri app"); 
+                    let cmd_command = thread::spawn(|| {
+                    Command::new("pnpm").args(["create", "tauri-app",&Arc::try_unwrap(gen_app_name).unwrap().as_str(), "--manager", "pnpm", "--template", "solid", "--yes"]).output().expect("unable ot create tauri app"); 
+                    }); 
+                    cmd_command.join().unwrap();
                 }, 
                 "react"=>{
-                    Command::new("pnpm").args(["create", "tauri-app", gen_app_name.take(), "--manager", "pnpm", "--template", "react", "--yes"]).output().expect("unable ot create tauri app"); 
+                    let cmd_command = thread::spawn(|| {
+                    Command::new("pnpm").args(["create", "tauri-app", &Arc::try_unwrap(gen_app_name).unwrap().as_str(), "--manager", "pnpm", "--template", "react", "--yes"]).output().expect("unable ot create tauri app"); 
+                    }); 
+                    cmd_command.join().unwrap();
                 }, 
                 _=>()
             }
         }
         #[tauri::command]
         pub fn open_vscode(folder_name: &str){
-            println!("{folder_name}"); 
             Command::new("cmd").args(["/c", "code", folder_name]).output().expect("Unable to run vscode."); 
         }
 }
