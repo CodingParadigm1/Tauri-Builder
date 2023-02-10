@@ -1,7 +1,7 @@
 <script>
     import FrameDescripts from '../FrameWorkEmbed/+page.svelte'; 
     import FrameworkLogo from './FrameworkLogo.svelte';
-    let icons = ["/svelte.svg","/next.svg","/tauri.svg","/solid.svg","/react.svg"]; 
+    let icons = [{"title":"/svelte.svg", "index":0},{"title":"/next.svg", "index":1},{"title":"/tauri.svg", "index":2},{"title":"/solid.svg", "index":3},{"title":"/react.svg", "index":4}]; 
     let descriptions = [
         "Svelte compiles your javascript code into enhanced js.",
         "If you need bleeding edge, this framework might be for you.",
@@ -19,14 +19,11 @@
 <main>
     <article id="frameworks">
         {#each icons as icon}
-             <FrameworkLogo icon_img={icon} on:click={()=>{ 
-                                                            change_framework(framework_counter);
-                                                            framework_counter += 1;
-                                                            }}/>
+             <FrameworkLogo icon_img={icon["title"]} on:click={()=>change_framework(icon["index"])}/>
         {/each}
     </article>
 </main>
-<FrameDescripts used_icon={icons[counter]} description={descriptions[counter]} web_page={web_sites[counter]}/>
+<FrameDescripts used_icon={icons[counter]["title"]} description={descriptions[counter]} web_page={web_sites[counter]}/>
 <style>
     main{
         margin-top:-20px;
