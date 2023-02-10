@@ -1,5 +1,6 @@
 <script>
     import FrameDescripts from '../FrameWorkEmbed/+page.svelte'; 
+    import FrameworkLogo from './FrameworkLogo.svelte';
     let icons = ["/svelte.svg","/next.svg","/tauri.svg","/solid.svg","/react.svg"]; 
     let descriptions = [
         "Svelte compiles your javascript code into enhanced js.",
@@ -9,6 +10,7 @@
         "Taking advantage of JSX, React takes a battle tested approach to UI dev."]; 
     let web_sites = ["https://kit.svelte.dev/", "https://nextjs.org/","https://tauri.app/","https://www.solidjs.com/", "https://reactjs.org/"]; 
     $: counter = 0; 
+    $: framework_counter = 0; 
     let change_framework = (num) => {
         counter = num; 
     };
@@ -16,26 +18,12 @@
 
 <main>
     <article id="frameworks">
-        <span>
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <img src="/svelte.svg" class="icon" alt="Svelte Logo" on:click={()=>change_framework(0)}/>
-        </span>
-        <span>
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <img src="/next.svg" alt="#"  class="icon" on:click={()=>change_framework(1)}>
-        </span>
-        <span>
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <img src="/tauri.svg" class="icon" alt="Svelte Logo" on:click={()=>change_framework(2)}/>
-        </span>
-        <span>
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <img src="/solid.svg" alt="#" class="icon"  on:click={()=>change_framework(3)}>
-        </span>
-        <span>
-            <!-- svelte-ignore a11y-click-events-have-key-events -->
-            <img src="/react.svg" alt="#" class="icon"  on:click={()=>change_framework(4)}>
-        </span>
+        {#each icons as icon}
+             <FrameworkLogo icon_img={icon} on:click={()=>{ 
+                                                            change_framework(framework_counter);
+                                                            framework_counter += 1;
+                                                            }}/>
+        {/each}
     </article>
 </main>
 <FrameDescripts used_icon={icons[counter]} description={descriptions[counter]} web_page={web_sites[counter]}/>
@@ -44,18 +32,6 @@
         margin-top:-20px;
         margin-bottom: 15px;
     }
-    span{
-        width:75px;
-        height:75px;
-        padding:2px;
-        text-align: center;
-        transition:.4s; 
-        border-radius: 50%;
-    }
-    span:hover{
-        background-image: radial-gradient( rgb(80, 77, 77), black);
-        padding:5px;
-    }
     #frameworks{
         display: flex;
         flex-direction: row;
@@ -63,16 +39,5 @@
         align-items: center;
         width:470px;
         height: 87px;
-    }
-    .icon{
-        width:65px;
-        height:65px;
-    }
-    .icon:hover{
-        width:70px;
-        height:70px;
-    }
-    img{
-        margin-top:2px;
     }
 </style>
