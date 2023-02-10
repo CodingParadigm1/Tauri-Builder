@@ -24,7 +24,7 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        margin-top:10px;
+        margin-top:5px;
         width:675px;
     }
     article{
