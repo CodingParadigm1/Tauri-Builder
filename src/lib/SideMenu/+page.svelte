@@ -4,21 +4,22 @@
     let pages; 
     page_component.subscribe((page)=>{
         pages = page; 
-    })
+    }); 
     let onClick = (page_num) => {
         page_number.set(page_num); 
     };
+    onClick(0); 
 </script>
 <article>
     <ul>
         {#each pages as page}
+             <!-- svelte-ignore a11y-click-events-have-key-events -->
              <li on:click={()=>onClick(page["index"])}>
                 {page["title"]}
              </li>
         {/each}
     </ul>
 </article>
-
 <style>
     *{
         font-size: 18px;
