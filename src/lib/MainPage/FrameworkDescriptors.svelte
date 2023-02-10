@@ -10,7 +10,6 @@
         "Taking advantage of JSX, React takes a battle tested approach to UI dev."]; 
     let web_sites = ["https://kit.svelte.dev/", "https://nextjs.org/","https://tauri.app/","https://www.solidjs.com/", "https://reactjs.org/"]; 
     $: counter = 0; 
-    $: framework_counter = 0; 
     let change_framework = (num) => {
         counter = num; 
     };
