@@ -19,8 +19,6 @@ let projects = [];
       }
       ++counter; 
   }
-  (async ()=>{
-      await invoke('generate_tauri_app', {framework:"initial", appname: ""});
-  })()
+  await invoke('generate_tauri_app', {framework:"initial", appname: ""});
 })(); 
 export default app;
