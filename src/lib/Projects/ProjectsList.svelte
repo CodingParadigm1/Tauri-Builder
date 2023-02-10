@@ -43,7 +43,7 @@
         await invoke('open_vscode', {folderName: app_name}); 
     }; 
 </script>
-<main>
+<main class:showBorder={projs.length>3}>
     {#each projs as project}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <section on:click={()=>open_code(project)}>
@@ -64,6 +64,9 @@
         display: flex;
         align-items: center;
         justify-items: center;
+        border:2px solid darkslategray;
+    }
+    .showBorder{
         border:2px solid whitesmoke;
     }
 
