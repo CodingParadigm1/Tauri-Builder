@@ -75,45 +75,4 @@
     img{
         margin-top:2px;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /* span:nth-child(odd){
-        width:75px;
-        height:75px;
-        padding:5px;
-        text-align: center;
-        transition:.4s;
-        border-top-right-radius:50%;
-        border-bottom-left-radius:50%;
-    }
-    span:hover:nth-child(odd){
-        background-image: radial-gradient( rgb(80, 77, 77), black);
-        border-top-left-radius:50%;
-        border-bottom-right-radius:50%;
-    }
-    span:nth-child(even){
-        width:75px;
-        height:75px;
-        padding:5px;
-        text-align: center;
-        transition:.4s;
-        border-top-left-radius:50%;
-        border-bottom-right-radius:50%;
-    }
-    span:hover:nth-child(even){
-        background-image: radial-gradient( rgb(80, 77, 77), black);
-        border-top-right-radius:50%;
-        border-bottom-left-radius:50%;
-    }
 </style>
