@@ -6,7 +6,7 @@ import License from '../lib/License/+page.svelte';
 
 export let page_component = writable([
     {"page":MainPage,"title":"Home", "index":0}, 
-    {"page":FrameWork,"title":"frameworks", "index":1}, 
-    {"page":Projects, "title":"projects","index":2}, 
-    {"page": License, "title":"license", "index": 3}
+    {"page":FrameWork,"title":"Frameworks", "index":1}, 
+    {"page":Projects, "title":"Projects","index":2}, 
+    {"page": License, "title":"License", "index": 3}
 ]); 
