@@ -11,9 +11,9 @@
 
 ### What should I install to use Tauri Builder? 
 
-- install <a href="https://www.rust-lang.org/learn/get-started" target="./">rust</a>
-- install <a href="https://pnpm.io/" target="./">pnpm</a>. 
-- install <a href="https://code.visualstudio.com/Download" target="./">vscode</a>.
+- install <a href="https://www.rust-lang.org/learn/get-started" target="_blank">rust</a>
+- install <a href="https://pnpm.io/" target="_blank">pnpm</a>. 
+- install <a href="https://code.visualstudio.com/Download" target="_blank">vscode</a>.
 - Then run the following command:
 
 ```sh
