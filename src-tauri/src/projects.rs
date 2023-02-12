@@ -1,10 +1,13 @@
 pub mod manage{
     use tauri; 
-    use std::fs; 
+    use std::fs::{self, remove_dir_all, remove_file}; 
     use std::path::{Path, PathBuf};
     use std::process::Command; 
     use std::sync::Arc; 
-    use std::thread; 
+    use std::thread;  
+    use std::fmt::Debug; 
+    use std::io; 
+    use std::env; 
         #[tauri::command]
         pub fn get_dir<'s>(cur_path: String)->Vec<PathBuf>{
             let path: &Path = Path::new(&cur_path); 
@@ -57,7 +60,82 @@ pub mod manage{
             }
         }
         #[tauri::command]
-        pub fn open_vscode(folder_name: &str){
-            Command::new("cmd").args(["/c", "code", folder_name]).output().expect("Unable to run vscode."); 
+        pub fn open_vscode(folder_name: String){
+            let folder = Arc::new(folder_name); 
+            let cmd_command = thread::spawn(|| {
+             Command::new("cmd").args(["/c", "code", &Arc::try_unwrap(folder).unwrap()]).output().expect("Unable to run vscode."); 
+            }); 
+            cmd_command.join().unwrap();
+        }
+        #[derive(Debug)]
+        enum ProgError {
+            NoFile,
+            NotUtf8,
+            Io(io::Error),
+        }
+        
+        impl From<io::Error> for ProgError {
+            fn from(err: io::Error) -> ProgError {
+                ProgError::Io(err)
+            }
+        }
+        
+        fn current_app_name() -> Result<String, ProgError> {
+            let program_name = env::current_exe()?
+                .file_name().ok_or(ProgError::NoFile)?
+                .to_str().ok_or(ProgError::NotUtf8)?
+                .to_owned();
+            Ok(program_name)
+        }
+        fn no_folders(current_dir: String)->io::Result<bool>{
+            let string_path = format!("./{current_dir}"); 
+            let new_path = Path::new(string_path.as_str()); 
+            for folders in fs::read_dir(new_path)?{ 
+                if folders.is_ok(){
+                    if folders?.path().is_dir(){
+                        return Ok(false); 
+                    }
+                }
+            }
+            Ok(true) 
+        }
+        #[tauri::command]
+        pub fn erase_project(current_dir: String){ 
+            let string_path = format!("./{current_dir}"); 
+            let new_path = Path::new(string_path.as_str());
+            let app_path: String = format!("../test_files\\{}", current_app_name().unwrap().as_str()); 
+            let mut deleted_dirs:Vec<PathBuf> = Vec::new(); 
+            let mut deleted_files: Vec<PathBuf> = Vec::new(); 
+            let mut counter = 0; 
+            while counter<2{
+                for folder in fs::read_dir(new_path).unwrap(){  
+                    if folder.is_ok(){
+                        let unwrapped_folder = folder.unwrap(); 
+                        let folders_path = unwrapped_folder.path(); 
+                        let path_not_exe = folders_path.display().to_string().as_str() != app_path.as_str();
+                        if no_folders(current_dir.clone()).unwrap()==false { 
+                            if folders_path.is_dir() && path_not_exe{ 
+                                if remove_dir_all(folders_path.clone()).is_ok(){
+                                    deleted_dirs.push(folders_path); 
+                                } 
+                            } else {
+                                continue; 
+                            }
+                        } else {
+                            if path_not_exe  {
+                                if remove_file(folders_path.clone()).is_ok(){
+                                    deleted_files.push(folders_path);
+                                } 
+                            }
+                        }
+                    }
+                }
+                counter = counter + 1; 
+            }
+            let num_files = deleted_files.len();
+            let num_dir_deleted = deleted_dirs.len();  
+            println!("{num_files} files deleted"); 
+            println!("{num_dir_deleted} directories deleted"); 
+            remove_dir_all(current_dir).unwrap();  
         }
 }
