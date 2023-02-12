@@ -10,16 +10,6 @@ export default app;
 
 let projects = [];
 (async ()=>{
-  projects = await invoke('get_dir', {curPath: "./"})
-})();
-
-(async () => {
-  let counter = 0; 
-  while (counter<projects.length){
-      if (projects[counter] === "./tauri-svelte"){
-          return; 
-      }
-      ++counter; 
-  }
-  await invoke('generate_tauri_app', {framework:"initial", appname: ""});
+  projects = await invoke('get_dir', {curPath: "./"}); 
+  await invoke('scan_files', {titles: projects}); 
 })(); 
