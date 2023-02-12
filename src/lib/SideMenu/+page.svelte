@@ -14,7 +14,7 @@
     <ul>
         {#each pages as page}
              <!-- svelte-ignore a11y-click-events-have-key-events -->
-             <li on:click={()=>onClick(page["index"])}>
+             <li data-sveltekit-preload-data="hover" on:click={()=>onClick(page["index"])}>
                 {page["title"]}
              </li>
         {/each}
