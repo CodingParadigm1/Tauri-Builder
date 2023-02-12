@@ -11,7 +11,7 @@
             {description}
         </p>
     </article>
-    <embed src={web_page}>
+    <embed src={web_page} data-sveltekit-preload-code="eager">
 </main>
 
 <style>
