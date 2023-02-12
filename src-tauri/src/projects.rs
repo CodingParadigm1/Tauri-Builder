@@ -8,7 +8,18 @@ pub mod manage{
     use std::fmt::Debug; 
     use std::io; 
     use std::env; 
-        #[tauri::command]
+        #[tauri::command(async)]
+        pub fn scan_files(titles: Vec<&str>){
+            let mut counter: usize = 0; 
+            while counter<titles.len(){
+                if titles[counter]=="./tauri-svelte"{
+                    return
+                }
+                counter = counter + 1; 
+            }
+            generate_tauri_app("initial".to_string(), "".to_string()); 
+        }
+        #[tauri::command(async)]
         pub fn get_dir<'s>(cur_path: String)->Vec<PathBuf>{
             let path: &Path = Path::new(&cur_path); 
             let mut extracted_files: Vec<PathBuf> = Vec::new(); 
@@ -17,7 +28,7 @@ pub mod manage{
                 }
                 extracted_files
             }
-        #[tauri::command]
+        #[tauri::command(async)]
         pub fn generate_tauri_app(framework: String, appname: String){ 
             let no_title = format!("tauri-{}", &framework.as_str()); 
             let mut gen_app_name: Arc<String> = Arc::new(appname.clone()); 
@@ -59,7 +70,7 @@ pub mod manage{
                 _=>()
             }
         }
-        #[tauri::command]
+        #[tauri::command(async)]
         pub fn open_vscode(folder_name: String){
             let folder = Arc::new(folder_name); 
             let cmd_command = thread::spawn(|| {
@@ -99,7 +110,7 @@ pub mod manage{
             }
             Ok(true) 
         }
-        #[tauri::command]
+        #[tauri::command(async)]
         pub fn erase_project(current_dir: String){ 
             let string_path = format!("./{current_dir}"); 
             let new_path = Path::new(string_path.as_str());
